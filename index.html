@@ -208,7 +208,9 @@
                 <h3>노트</h3>
                 <p><span id="status"></span></p>
                 <input type="text" id="notetitle" placeholder="제목">
-                <p><textarea name="content" id="content" placeholder="내용"></textarea></p>
+                <p><textarea onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" name="content" id="content" placeholder="내용"></textarea></p>
+                 
+                
                 <p><button id="savebutton" onclick="save()">저장</button></p>
                 <p><button id="newnote" onclick="newnote()">새로운 메모</button></p>
             </div>
