@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Smart+노트📝</title>
+        <style>
+            body{
+                margin: 0;
+            }
+            #main{
+                color: black;
+                text-decoration: none;
+                text-align: center;
+                margin:0;
+                border-bottom: 3px solid black;
+                font-size: 50px;
+                display: block;
+            }
+            h1{
+                margin: 0;
+            }
+            h2{
+                color: gray;
+                text-align: center;
+                margin-top: 0;
+                font-size: 20px;
+                margin-bottom: 0;
+            }
+            #modebutton{
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            #modebutton img{
+                width: 30px;
+                height: 30px;
+            }
+            #hi{
+                padding-left: 30px;
+                border-right: 3px solid black;
+                margin-top: 0;
+            }
+            ul li{
+                padding-bottom: 10px;
+                font-size: 30px;
+            }
+            #grid{
+                
+                display: grid;
+                grid-template-columns: 270px 2fr 1fr;
+            }
+            #note{
+                text-align: center;
+            }
+            h3{
+                margin: 0;
+                font-size: 30px;
+            }
+            #calculator{
+                text-align: center;
+            }
+            #content{
+                width: 300px;
+                height: 300px;
+                font-size: 20px;
+                padding: 10px;
+            }
+            #notetitle{
+                
+                font-size: 19px;
+                padding: 10px;
+            }
+            #savebutton{
+                cursor: pointer;
+            }
+            ul li button{
+                width: 180px;
+                height: 35px;
+                font-size: 20px;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #calculator input{
+                height: 50px;
+                font-size: 20px;
+                width: 200px;
+            }
+            #calculator button{
+                height: 50px;
+                font-size: 20px;
+                width: 200px;
+                cursor: pointer;
+            }
+            #note{
+                border-right: 3px solid black;
+            }
+            #reset{
+                display: block;
+                margin: auto; 
+            }
+            #hi{
+                padding: 0;
+            }
+        </style>
+        <script>
+            var savecount=parseInt(localStorage.getItem('savecount'))||0
+            var currentid=null
+
+            function save(){
+                var save_title=document.getElementById('notetitle').value
+                var save_content=document.getElementById('content').value
+                if (currentid==null){
+                    savecount++
+                    localStorage.setItem('notetitle'+savecount,save_title)
+                    localStorage.setItem('content'+savecount,save_content)
+                    localStorage.setItem('savecount',savecount)
+                    createLoadButton(savecount,save_title)
+                }
+                else{
+                    localStorage.setItem('notetitle'+currentid,save_title)
+                    localStorage.setItem('content'+currentid,save_content)
+                    updatebutton(currentid,save_title)
+                }
+                document.getElementById('status').innerHTML=''
+                
+            }
+            function createLoadButton(id,title){
+                var li=document.createElement('li')
+                var created_button=document.createElement('button')
+                created_button.innerHTML=title
+                created_button.id='button'+id
+                created_button.onclick=function(){
+                    loadtitle(id)
+                }
+                li.appendChild(created_button)
+                document.querySelector('ul').appendChild(li)
+            }
+            function updatebutton(id, title){
+                var button=document.getElementById('button'+id)
+                button.innerHTML=title
+            }
+            function loadtitle(id){
+                currentid=id
+                var loaded_title=localStorage.getItem('notetitle'+id)
+                document.getElementById('notetitle').value=loaded_title
+                var loaded_content=localStorage.getItem('content'+id)
+                document.getElementById('content').value=loaded_content
+                document.getElementById('status').innerHTML='\''+loaded_title+'\''+'수정중'
+
+            }
+            function newnote(){
+                currentid=null
+                document.getElementById('notetitle').value=''
+                document.getElementById('content').value=''
+                document.getElementById('status').innerHTML=''
+            }
+            window.onload=function(){
+                for (var i=1; i<=savecount;i++){
+                    var title= localStorage.getItem('notetitle'+i)
+                    if (title){
+                        createLoadButton(i,title)
+                    }
+                }
+            }
+            function math(){
+                var first=parseFloat(document.getElementById('first').value)
+                var metic=document.getElementById('metic').value
+                var second=parseFloat(document.getElementById('second').value)
+                var res
+                if (metic==='+'){
+                    res=first+second
+                }
+                else if(metic==='-'){
+                res=first-second
+                }
+                else if(metic==='*'){
+                    res=first*second
+                }
+                else if(metic==='/'){
+                    res=first/second
+                }
+                else{
+                    res='잘못된 연산자'
+                }
+                document.getElementById('res').value=res
+            }
+            function reset(){
+                localStorage.clear()
+                document.querySelector('ul').innerHTML=''
+            }
+        </script>
+    </head>
+    <body>
+        <h1><a id="main" href="index.html">Smart+노트📝</a></h1>
+        <h2>계산기가 있는 노트</h2>
+        <button id="modebutton" type="button" value="day" onclick="">
+            <img src="day.png">
+        </button>
+        <div id="grid">
+            <div id="hi">
+                <button id="reset" onclick="reset()" >초기화</button>
+            <ul>
+            </ul>
+            </div>
+            <div id="note">
+                <h3>노트</h3>
+                <p><span id="status"></span></p>
+                <input type="text" id="notetitle" placeholder="제목">
+                <p><textarea name="content" id="content" placeholder="내용"></textarea></p>
+                <p><button id="savebutton" onclick="save()">저장</button></p>
+                <p><button id="newnote" onclick="newnote()">새로운 메모</button></p>
+            </div>
+            <div id="calculator">
+                <h3>계산기</h3>
+                <p><input type="text" id="first" placeholder="첫번째 피연산자"></p>
+                <p><input type="text" id='metic' placeholder="연산자(+,-,*,/)"></p>
+                <p><input type="text" id="second" placeholder="두번째 피연산자"></p>
+                <p><button onclick="math()">=</button></p>
+                <p><input type="text" id="res"  placeholder="결과"></p>
+                
+            </div>
+        </div>
+    </body>
+</html>
