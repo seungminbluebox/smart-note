@@ -105,6 +105,9 @@
             #hi{
                 padding: 0;
             }
+            #delbutton{
+                width: 100px;
+            }
         </style>
         <script>
             var savecount=parseInt(localStorage.getItem('savecount'))||0
@@ -136,7 +139,14 @@
                 created_button.onclick=function(){
                     loadtitle(id)
                 }
+                var delet_button=document.createElement('button')
+                delet_button.innerHTML='메모삭제'
+                delet_button.id='delbutton'
+                delet_button.onclick=function(){
+                    deletnote(id)
+                }
                 li.appendChild(created_button)
+                li.appendChild(delet_button)
                 document.querySelector('ul').appendChild(li)
             }
             function updatebutton(id, title){
@@ -158,6 +168,14 @@
                 document.getElementById('content').value=''
                 document.getElementById('status').innerHTML=''
             }
+            function deletnote(id){
+                if (confirm('정말로 삭제하시겠습니까?')){
+                localStorage.removeItem('title'+id)
+                localStorage.removeItem('content'+id)
+                var button=document.getElementById('button'+id)
+                button.parentElement.remove()
+            }
+        }
             window.onload=function(){
                 for (var i=1; i<=savecount;i++){
                     var title= localStorage.getItem('notetitle'+i)
